@@ -41,7 +41,7 @@ public class CommentController {
     }
     
     
-//localhost:8081/api/posts/{postId}/comments/{commentId}
+//localhost:8081/api/posts/{postId}/comments/commentId}
     @GetMapping("/posts/{postId}/comments/{id}")
     public ResponseEntity<CommentDto> getCommentById(@PathVariable(value = "postId") Long postId,
                                                      @PathVariable(value = "id") Long commentId) throws Exception{

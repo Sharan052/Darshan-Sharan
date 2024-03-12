@@ -1,15 +1,19 @@
 package com.example.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.Repository.CommentRepository;
 import com.example.Repository.PostRepository;
 import com.example.dto.PostDto;
 import com.example.entity.Post;
+
+import jakarta.persistence.EntityNotFoundException;
 
 
 @Service
@@ -21,7 +25,8 @@ public class PostServiceImpl  implements PostService {
 	@Autowired 
    private ModelMapper mapper;
 
-   
+	@Autowired
+   private CommentRepository commentRepository; 
 
     @Override
     public PostDto createPost(PostDto postDto) {
@@ -41,6 +46,21 @@ public class PostServiceImpl  implements PostService {
         List<Post> posts = postRepository.findAll();
         return posts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
     }
+    
+	@Override
+	public void deletePostAndComments(Long postId) {
+	       Optional<Post> postOptional = postRepository.findById(postId);
+	       if(postOptional.isPresent())
+	       {
+	    	   Post post = postOptional.get();
+	           commentRepository.deleteAll(post.getComments());
+	           postRepository.delete(post);
+	       }
+	       else {
+	    	   throw new EntityNotFoundException("Post with ID " + postId + " not found");
+	       }
+	       
+	}
 
 
 // convert Entity into DTO
@@ -68,4 +88,7 @@ public class PostServiceImpl  implements PostService {
         post.setContent(postDto.getContent());*/
         return post;
     }
+
+
+
 }

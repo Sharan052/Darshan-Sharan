@@ -8,6 +8,8 @@ public interface PostService {
     PostDto createPost(PostDto postDto);
 
 	List<PostDto> getAllPosts();
+
+	void deletePostAndComments(Long postId);
 	
 	 
 }
